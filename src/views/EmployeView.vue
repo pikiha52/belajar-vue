@@ -1,5 +1,6 @@
 <template>
     <div>
+        <loading v-model:active="loading" :can-cancel="true" :is-full-page="true" />
         <div class="min-h-full">
             <side-bar-vue></side-bar-vue>
 
@@ -34,18 +35,19 @@
 
                 </div>
                 <!-- content -->
-                <main class="flex-1 pb-8">
+                <main class="flex-1 pb-8" v-if="!addEmploye">
                     <div class="px-4 sm:px-6 lg:px-8">
                         <div class="sm:flex sm:items-center">
                             <div class="sm:flex-auto">
                                 <h1 class="text-xl font-semibold text-gray-900">Employes</h1>
-                                <p class="mt-2 text-sm text-gray-700">A list of all the employe in your company including
+                                <p class="mt-2 text-sm text-gray-700">A list of all the employe in your company
+                                    including
                                     their name, title, address and role.</p>
                             </div>
                             <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                                <button type="button"
+                                <button type="button" v-on:click="formAddEmploye"
                                     class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">Add
-                                    user</button>
+                                    employe</button>
                             </div>
                         </div>
                         <div class="mt-8 flex flex-col">
@@ -88,8 +90,13 @@
                                                     <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit<span
                                                             class="sr-only">, Lindsay Walton</span></a>
                                                 </td>
+                                                <td
+                                                    class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
+                                                    <button v-on:click="removeEmploye(item.id)"
+                                                        class="text-red-600 hover:text-red-900">Remove<span
+                                                            class="sr-only">, Lindsay Walton</span></button>
+                                                </td>
                                             </tr>
-
                                         </tbody>
                                     </table>
                                 </div>
@@ -99,13 +106,14 @@
                                     <div class="hidden sm:block">
                                         <p class="text-sm text-gray-700">
                                             <span class="font-medium">{{ totalItems }}</span>
-                                            results 
+                                            results
                                         </p>
                                     </div>
                                     <div class="flex flex-1 justify-between sm:justify-end">
                                         <a href="#" v-if="currentPage != 0" v-on:click="currentPage -= 1; listEmploye()"
                                             class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
-                                        <a href="#" v-if="currentPage < totalPages" v-on:click="currentPage += 1; listEmploye()"
+                                        <a href="#" v-if="currentPage < totalPages"
+                                            v-on:click="currentPage += 1; listEmploye()"
                                             class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
                                     </div>
                                 </nav>
@@ -114,8 +122,14 @@
                             </div>
                         </div>
                     </div>
-
                 </main>
+
+                <main class="flex-1 pb-8" v-if="addEmploye">
+                    <div class="px-4 sm:px-6 lg:px-8">
+                        <FormEmploye v-on:input="valueFormEmploye"></FormEmploye>
+                    </div>
+                </main>
+
                 <!-- end -->
             </div>
         </div>
@@ -123,9 +137,12 @@
 </template>
 
 <script>
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
 import SideBarVue from "@/components/SideBar.vue";
 import TopBarVue from "@/components/TopBar.vue";
 import axios from "axios";
+import FormEmploye from "@/components/FormEmploye.vue";
 export default {
     name: 'EmployeView',
     data() {
@@ -134,10 +151,15 @@ export default {
             totalItems: 0,
             totalPages: 0,
             employes: null,
+            addEmploye: false,
+            loading: false,
         }
     },
     components: {
-        SideBarVue, TopBarVue
+        SideBarVue,
+        TopBarVue,
+        FormEmploye,
+        Loading
     },
     methods: {
         listEmploye: function () {
@@ -151,6 +173,49 @@ export default {
                 }).catch((error) => {
                     console.log(error)
                 });
+        },
+        formAddEmploye: function () {
+            if (this.addEmploye == false) {
+                this.addEmploye = true
+            } else {
+                this.addEmploye = false
+            }
+        },
+        valueFormEmploye: async function (valueForm) {
+            this.loading = true
+            if (valueForm["employe_name"] && valueForm["employe_role"] && valueForm["employe_phone"] && valueForm["employe_address"]) {
+                axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("token");
+                await axios.post(`http://localhost:3000/api/v1/employe/`, {
+                    'employe_name': valueForm["employe_name"],
+                    'employe_role': valueForm["employe_role"],
+                    'employe_phone_number': valueForm["employe_phone_number"],
+                    'employe_address': valueForm["employe_address"]
+                }).then((response) => {
+                    this.loading = false
+                    if (response.statusText == 'OK') {
+                        this.addEmploye = false
+                        this.listEmploye()
+                    }
+                }).catch((error) => {
+                    this.loading = false
+                    this.listEmploye()
+                    error
+                });
+            } else {
+                this.loading = false
+                this.listEmploye()
+            }
+        },
+        removeEmploye: async function (id) {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("token");
+            await axios.delete(`http://localhost:3000/api/v1/employe/${id}`)
+            .then((response) => {
+                response
+                this.listEmploye()
+            }).catch((error) => {
+                error
+                this.listEmploye()
+            });
         }
     },
     mounted() {
