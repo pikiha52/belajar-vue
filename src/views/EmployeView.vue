@@ -87,7 +87,8 @@
                                                 </td>
                                                 <td
                                                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
-                                                    <button v-on:click="showEmployeDetail(item.id)" class="text-indigo-600 hover:text-indigo-900">Edit<span
+                                                    <button v-on:click="showEmployeDetail(item.id)"
+                                                        class="text-indigo-600 hover:text-indigo-900">Edit<span
                                                             class="sr-only">, {{ item.employe_name }}</span></button>
                                                 </td>
                                                 <td
@@ -112,7 +113,7 @@
                                     <div class="flex flex-1 justify-between sm:justify-end">
                                         <a href="#" v-if="currentPage != 0" v-on:click="currentPage -= 1; listEmploye()"
                                             class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
-                                        <a href="#" v-if="currentPage < totalPages"
+                                        <a href="#" v-if="currentPage < totalPages && totalItems > 10"
                                             v-on:click="currentPage += 1; listEmploye()"
                                             class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
                                     </div>
@@ -211,13 +212,13 @@ export default {
         removeEmploye: async function (id) {
             axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("token");
             await axios.delete(`http://localhost:3000/api/v1/employe/${id}`)
-            .then((response) => {
-                response
-                this.listEmploye()
-            }).catch((error) => {
-                error
-                this.listEmploye()
-            });
+                .then((response) => {
+                    response
+                    this.listEmploye()
+                }).catch((error) => {
+                    error
+                    this.listEmploye()
+                });
         }
     },
     mounted() {
