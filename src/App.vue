@@ -17,7 +17,9 @@ export default {
         axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("token");
         axios.get(`http://localhost:3000/api/v1/auth/checktoken`)
           .then((response) => {
-            response
+            if (response.data.msg == 'Token verify') {
+              router.push(router.currentRoute.value.fullPath)
+            }
           }).catch((error) => {
             console.log(error)
             router.push('/')

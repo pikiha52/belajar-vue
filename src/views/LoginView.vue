@@ -52,10 +52,12 @@ export default {
           .then((response) => {
 
             if (response.data.token) {
-              console.log(response.data.modules)
               this.modules.push(response.data.modules)
               localStorage.setItem("token", response.data.token);
               localStorage.setItem("module", this.modules);
+              localStorage.setItem("username", response.data.username)
+              localStorage.setItem("fullname", response.data.fullname)
+              localStorage.setItem("email", response.data.email)
               router.push("home");
             } else {
               this.errorstatus = true;

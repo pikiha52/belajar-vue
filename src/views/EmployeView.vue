@@ -87,14 +87,14 @@
                                                 </td>
                                                 <td
                                                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
-                                                    <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit<span
-                                                            class="sr-only">, Lindsay Walton</span></a>
+                                                    <button v-on:click="showEmployeDetail(item.id)" class="text-indigo-600 hover:text-indigo-900">Edit<span
+                                                            class="sr-only">, {{ item.employe_name }}</span></button>
                                                 </td>
                                                 <td
                                                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
                                                     <button v-on:click="removeEmploye(item.id)"
                                                         class="text-red-600 hover:text-red-900">Remove<span
-                                                            class="sr-only">, Lindsay Walton</span></button>
+                                                            class="sr-only">, {{ item.employe_name }}</span></button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -153,6 +153,8 @@ export default {
             employes: null,
             addEmploye: false,
             loading: false,
+            showEmploye: false,
+            id: 0,
         }
     },
     components: {

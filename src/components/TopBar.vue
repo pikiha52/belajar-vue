@@ -62,8 +62,7 @@
               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
               alt="" />
             <span class="ml-3 hidden text-sm font-medium text-gray-700 lg:block"><span class="sr-only">Open user menu
-                for </span>Emilia
-              Birch</span>
+                for </span>{{ fullname }}</span>
             <!-- Heroicon name: mini/chevron-down -->
             <svg class="ml-1 hidden h-5 w-5 flex-shrink-0 text-gray-400 lg:block" xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -109,6 +108,7 @@ export default {
     return {
       openprofile: true,
       token: "",
+      fullname: ""
     };
   },
   methods: {
@@ -138,5 +138,8 @@ export default {
         });
     },
   },
+  mounted() {
+    this.fullname = localStorage.getItem("fullname")
+  }
 };
 </script>

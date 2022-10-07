@@ -18,6 +18,11 @@ const routes = [
     path: '/employe',
     name: 'employe',
     component: EmployeView
+  },
+  {
+    path: '/employe/:id',
+    name: 'employeShow',
+    component: EmployeView
   }
 ]
 
