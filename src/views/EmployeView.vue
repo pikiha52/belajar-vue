@@ -173,7 +173,7 @@ export default {
                         this.totalPages = response.data.totalPages,
                         this.employes = response.data.tutorials
                 }).catch((error) => {
-                    console.log(error)
+                    error
                 });
         },
         formAddEmploye: function () {

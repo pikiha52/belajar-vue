@@ -131,7 +131,7 @@ export default {
           router.push('/')
         })
         .catch((error) => {
-          console.log(error)
+          error
           localStorage.removeItem('token')
           localStorage.removeItem('module')
           router.push('/')

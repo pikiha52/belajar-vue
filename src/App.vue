@@ -21,7 +21,7 @@ export default {
               router.push(router.currentRoute.value.fullPath)
             }
           }).catch((error) => {
-            console.log(error)
+            error
             router.push('/')
           })
       } else {
