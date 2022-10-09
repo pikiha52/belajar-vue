@@ -130,7 +130,8 @@ export default {
       module: localStorage.module,
       menu: [
         {'name': 'Home', 'route': 'home', 'active': true},
-        {'name': 'Employe', 'route': 'employe', 'active': false}
+        {'name': 'Employe', 'route': 'employe', 'active': false},
+        {'name': 'Users', 'route': 'users', 'active': false}
       ]
     }
   },
